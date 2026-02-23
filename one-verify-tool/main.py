@@ -20,7 +20,6 @@ Requirements:
 Author: ThanhNguyxn
 """
 
-import os
 import re
 import sys
 import json
@@ -29,8 +28,6 @@ import random
 import hashlib
 from pathlib import Path
 from io import BytesIO
-from typing import Dict, Optional, Tuple
-from functools import wraps
 
 try:
     import httpx
@@ -82,7 +79,7 @@ class Stats:
         self.file = Path(__file__).parent / "stats.json"
         self.data = self._load()
 
-    def _load(self) -> Dict:
+    def _load(self) -> dict:
         if self.file.exists():
             try:
                 return json.loads(self.file.read_text())
@@ -112,7 +109,7 @@ class Stats:
         )
 
     def print_stats(self):
-        print(f"\n📊 Statistics:")
+        print("\n📊 Statistics:")
         print(
             f"   Total: {self.data['total']} | ✅ {self.data['success']} | ❌ {self.data['failed']}"
         )
@@ -326,7 +323,7 @@ UNIVERSITIES = [
 ]
 
 
-def select_university() -> Dict:
+def select_university() -> dict:
     """Weighted random selection based on success rates"""
     weights = []
     for uni in UNIVERSITIES:
@@ -512,7 +509,7 @@ def generate_fingerprint() -> str:
     return hashlib.md5("|".join(components).encode()).hexdigest()
 
 
-def generate_name() -> Tuple[str, str]:
+def generate_name() -> tuple[str, str]:
     return random.choice(FIRST_NAMES), random.choice(LAST_NAMES)
 
 
@@ -743,13 +740,13 @@ class GeminiVerifier:
             self.client.close()
 
     @staticmethod
-    def _parse_id(url: str) -> Optional[str]:
+    def _parse_id(url: str) -> str | None:
         match = re.search(r"verificationId=([a-f0-9]+)", url, re.IGNORECASE)
         return match.group(1) if match else None
 
     def _request(
-        self, method: str, endpoint: str, body: Dict = None
-    ) -> Tuple[Dict, int]:
+        self, method: str, endpoint: str, body: dict = None
+    ) -> tuple[dict, int]:
         random_delay()
         try:
             # Use anti-detect headers if available
@@ -820,7 +817,7 @@ class GeminiVerifier:
         print(f"     ❗ S3 upload failed after attempts. Last error: {last_exc}")
         return False
 
-    def check_link(self) -> Dict:
+    def check_link(self) -> dict:
         """Check if verification link is valid"""
         if not self.vid:
             return {"valid": False, "error": "Invalid URL"}
@@ -840,7 +837,7 @@ class GeminiVerifier:
             return {"valid": False, "error": "Already pending review"}
         return {"valid": False, "error": f"Invalid step: {step}"}
 
-    def verify(self) -> Dict:
+    def verify(self) -> dict:
         """Run full verification"""
         if not self.vid:
             return {"success": False, "error": "Invalid verification URL"}

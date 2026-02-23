@@ -13,17 +13,12 @@ Written from scratch based on SheerID API flow
 Author: ThanhNguyxn
 """
 
-import os
 import re
 import sys
-import json
 import time
 import random
-import hashlib
-import base64
 from pathlib import Path
 from io import BytesIO
-from typing import Dict, Optional, Tuple
 
 try:
     import httpx
@@ -374,7 +369,7 @@ LAST_NAMES = [
 ]
 
 
-def generate_name() -> Tuple[str, str]:
+def generate_name() -> tuple[str, str]:
     """Generate random first and last name"""
     return random.choice(FIRST_NAMES), random.choice(LAST_NAMES)
 
@@ -438,9 +433,9 @@ def generate_teacher_document(
     y = 200
     info_lines = [
         f"Employee Name: {first_name} {last_name}",
-        f"Position: Faculty Member",
-        f"Department: Education",
-        f"Employment Status: Active",
+        "Position: Faculty Member",
+        "Department: Education",
+        "Employment Status: Active",
         f"Issue Date: {time.strftime('%B %d, %Y')}",
     ]
 
@@ -485,12 +480,12 @@ class BoltnewVerifier:
             self.client.close()
 
     @staticmethod
-    def _parse_verification_id(url: str) -> Optional[str]:
+    def _parse_verification_id(url: str) -> str | None:
         """Extract verification ID from URL"""
         match = re.search(r"verificationId=([a-f0-9]+)", url, re.IGNORECASE)
         return match.group(1) if match else None
 
-    def _request(self, method: str, url: str, body: Dict = None) -> Tuple[Dict, int]:
+    def _request(self, method: str, url: str, body: dict = None) -> tuple[dict, int]:
         """Make SheerID API request"""
         headers = {"Content-Type": "application/json"}
 
@@ -546,7 +541,7 @@ class BoltnewVerifier:
         print(f"   [ERROR] S3 upload failed. Last error: {last_exc}")
         return False
 
-    def verify(self) -> Dict:
+    def verify(self) -> dict:
         """Run full verification flow"""
         if not self.verification_id:
             return {"success": False, "error": "Invalid verification URL"}
@@ -712,7 +707,7 @@ def main():
         print("[ERROR] Invalid URL. Must contain sheerid.com")
         return
 
-    print(f"\n[INFO] Processing URL...")
+    print("\n[INFO] Processing URL...")
 
     verifier = BoltnewVerifier(url)
     result = verifier.verify()

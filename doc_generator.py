@@ -23,9 +23,7 @@ Author: ThanhNguyxn
 
 import random
 import time
-import hashlib
 from io import BytesIO
-from typing import Tuple, Optional
 
 try:
     from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -120,7 +118,7 @@ def add_simple_noise(img: Image.Image, intensity: int = 3) -> Image.Image:
     return img
 
 
-def randomize_position(base_x: int, base_y: int, variance: int = 3) -> Tuple[int, int]:
+def randomize_position(base_x: int, base_y: int, variance: int = 3) -> tuple[int, int]:
     """Add small random offset to position"""
     return (
         base_x + random.randint(-variance, variance),
@@ -165,7 +163,7 @@ def get_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     return ImageFont.load_default()
 
 
-def generate_barcode(draw: ImageDraw.Draw, x: int, y: int, width: int = 140, height_range: Tuple[int, int] = (30, 50)):
+def generate_barcode(draw: ImageDraw.Draw, x: int, y: int, width: int = 140, height_range: tuple[int, int] = (30, 50)):
     """Generate fake barcode pattern"""
     bar_count = random.randint(20, 30)
     bar_width = width // bar_count
@@ -513,7 +511,7 @@ def generate_teacher_badge(first: str, last: str, school: str, add_noise: bool =
         f"ID: {teacher_id}",
         f"Position: {random.choice(['Teacher', 'Instructor', 'Faculty Member'])}",
         f"Department: {random.choice(departments)}",
-        f"Status: Active"
+        "Status: Active"
     ]
     
     for line in info_lines:

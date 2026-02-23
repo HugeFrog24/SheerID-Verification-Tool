@@ -29,7 +29,6 @@ import time
 import uuid
 import base64
 import json
-import sys
 
 # ============ CHROME IMPERSONATION VERSIONS ============
 # These are the Chrome versions that curl_cffi can impersonate
@@ -522,10 +521,10 @@ def create_session(proxy: str = None, impersonate: str = None):
                 session = curl_requests.Session(impersonate=imp_version)
 
             print(f"[Anti-Detect] ✅ Using curl_cffi with {imp_version} impersonation")
-            print(f"[Anti-Detect]    TLS fingerprint will match real Chrome browser")
+            print("[Anti-Detect]    TLS fingerprint will match real Chrome browser")
             return session, "curl_cffi", imp_version
 
-        except Exception as e:
+        except Exception:
             # Try without impersonation if version not supported
             print(
                 f"[WARN] Impersonation '{imp_version}' not supported, trying fallback..."
@@ -610,7 +609,7 @@ def print_anti_detect_info():
     """Print info about anti-detection configuration"""
     session, lib, imp = create_session()
     print(f"\n{'=' * 50}")
-    print(f"Anti-Detection Configuration")
+    print("Anti-Detection Configuration")
     print(f"{'=' * 50}")
     print(f"  HTTP Library: {lib}")
     print(f"  Impersonation: {imp or 'None (detectable!)'}")
@@ -620,13 +619,13 @@ def print_anti_detect_info():
 
     if lib == "curl_cffi" and imp:
         print(f"\n  ✅ TLS Fingerprint: Spoofed as {imp}")
-        print(f"  ✅ Detection Risk: LOW")
+        print("  ✅ Detection Risk: LOW")
     elif lib == "curl_cffi":
-        print(f"\n  ⚠️  TLS Fingerprint: Partially spoofed")
-        print(f"  ⚠️  Detection Risk: MEDIUM")
+        print("\n  ⚠️  TLS Fingerprint: Partially spoofed")
+        print("  ⚠️  Detection Risk: MEDIUM")
     else:
-        print(f"\n  ❌ TLS Fingerprint: Python signature (detectable)")
-        print(f"  ❌ Detection Risk: HIGH")
+        print("\n  ❌ TLS Fingerprint: Python signature (detectable)")
+        print("  ❌ Detection Risk: HIGH")
 
     print(f"{'=' * 50}\n")
 
@@ -921,7 +920,7 @@ if __name__ == "__main__":
 
     print_anti_detect_info()
 
-    print(f"Sample Fingerprints:")
+    print("Sample Fingerprints:")
     print(f"  Basic Hash: {get_fingerprint()}")
     print(f"  Canvas FP: {get_canvas_fingerprint()}")
     print(f"  Audio FP: {get_audio_fingerprint()}")
@@ -930,16 +929,16 @@ if __name__ == "__main__":
     print(f"  WebGL Vendor: {webgl['vendor']}")
     print(f"  WebGL Renderer: {webgl['renderer'][:40]}...")
 
-    print(f"\nSample User-Agent:")
+    print("\nSample User-Agent:")
     ua = get_matched_ua_for_impersonate()
     print(f"  {ua[:70]}...")
 
-    print(f"\nSample Headers (SheerID):")
+    print("\nSample Headers (SheerID):")
     headers = get_headers(for_sheerid=True)
     for k, v in list(headers.items())[:8]:
         print(f"  {k}: {str(v)[:50]}{'...' if len(str(v)) > 50 else ''}")
 
-    print(f"\nNewRelic Headers:")
+    print("\nNewRelic Headers:")
     nr = generate_newrelic_headers()
     print(f"  traceparent: {nr['traceparent'][:50]}...")
 

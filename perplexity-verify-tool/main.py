@@ -29,8 +29,6 @@ import random
 import hashlib
 from pathlib import Path
 from io import BytesIO
-from typing import Dict, Optional, Tuple
-from functools import wraps
 
 try:
     import httpx
@@ -81,7 +79,7 @@ class Stats:
         self.file = Path(__file__).parent / "stats.json"
         self.data = self._load()
 
-    def _load(self) -> Dict:
+    def _load(self) -> dict:
         if self.file.exists():
             try:
                 return json.loads(self.file.read_text())
@@ -111,7 +109,7 @@ class Stats:
         )
 
     def print_stats(self):
-        print(f"\n📊 Statistics:")
+        print("\n📊 Statistics:")
         print(
             f"   Total: {self.data['total']} | ✅ {self.data['success']} | ❌ {self.data['failed']}"
         )
@@ -129,13 +127,13 @@ stats = Stats()
 GRONINGEN = {"id": 291085, "name": "University of Groningen", "domain": "rug.nl"}
 
 
-def select_groningen() -> Dict:
+def select_groningen() -> dict:
     """Select University of Groningen for NL IP bypass"""
     return {**GRONINGEN, "idExtended": str(GRONINGEN["id"])}
 
 
 # Alias for compatibility
-def select_university() -> Dict:
+def select_university() -> dict:
     """Always returns Groningen for this tool"""
     return select_groningen()
 
@@ -278,7 +276,7 @@ def generate_fingerprint() -> str:
     return hashlib.md5("|".join(components).encode()).hexdigest()
 
 
-def generate_name() -> Tuple[str, str]:
+def generate_name() -> tuple[str, str]:
     return random.choice(FIRST_NAMES), random.choice(LAST_NAMES)
 
 
@@ -483,7 +481,7 @@ def generate_groningen_invoice(first: str, last: str, dob: str) -> bytes:
     ]
     transfer_values = [
         f"Rijksuniversiteit Groningen {iban} ABN",
-        f"AMRO ABNANL2A Gustav Mahlerlaan 10, 1082 PP",
+        "AMRO ABNANL2A Gustav Mahlerlaan 10, 1082 PP",
         "Amsterdam, the Netherlands Tuition fees S5643302, Y.",
         "Amman",
         "",
@@ -613,7 +611,7 @@ class PerplexityVerifier:
             self.client.close()
 
     @staticmethod
-    def _parse_id(url: str) -> Optional[str]:
+    def _parse_id(url: str) -> str | None:
         # Format 1: verificationId=XXX (query param)
         match = re.search(r"verificationId=([a-f0-9]+)", url, re.IGNORECASE)
         if match:
@@ -631,12 +629,12 @@ class PerplexityVerifier:
         return None
 
     @staticmethod
-    def _parse_program_id(url: str) -> Optional[str]:
+    def _parse_program_id(url: str) -> str | None:
         # Extract program ID from URL: https://services.sheerid.com/verify/PROGRAM_ID/...
         match = re.search(r"/verify/([a-f0-9]+)/?", url, re.IGNORECASE)
         return match.group(1) if match else None
 
-    def _create_verification_from_program(self) -> Optional[str]:
+    def _create_verification_from_program(self) -> str | None:
         """Create a new verification session from program ID"""
         if not self.program_id:
             return None
@@ -666,8 +664,8 @@ class PerplexityVerifier:
             return None
 
     def _request(
-        self, method: str, endpoint: str, body: Dict = None
-    ) -> Tuple[Dict, int]:
+        self, method: str, endpoint: str, body: dict = None
+    ) -> tuple[dict, int]:
         random_delay()
         try:
             resp = self.client.request(
@@ -721,7 +719,7 @@ class PerplexityVerifier:
         print(f"     ❗ S3 upload failed. Last error: {last_exc}")
         return False
 
-    def search_organization(self, query: str) -> Optional[Dict]:
+    def search_organization(self, query: str) -> dict | None:
         """Search for organization ID dynamically"""
         print(f"   🔍 Searching for '{query}'...")
         # Use global organization search endpoint
@@ -741,7 +739,7 @@ class PerplexityVerifier:
 
         return None
 
-    def check_link(self) -> Dict:
+    def check_link(self) -> dict:
         """Check if verification link is valid"""
         # If no verification ID but have program ID, try to create one
         if not self.vid and self.program_id:
@@ -772,7 +770,7 @@ class PerplexityVerifier:
             return {"valid": False, "error": "Already pending review"}
         return {"valid": False, "error": f"Invalid step: {step}"}
 
-    def verify(self) -> Dict:
+    def verify(self) -> dict:
         """Run full verification"""
         if not self.vid:
             # Try to create from program ID if available

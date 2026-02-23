@@ -24,16 +24,13 @@ import json
 import hashlib
 import time
 import re
-import os
 import sys
 import argparse
 import uuid
 import base64
 import imaplib
 import email
-from email.header import decode_header
 from pathlib import Path
-from typing import Optional, List
 
 try:
     import requests
@@ -108,7 +105,7 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrom
 
 
 # ============ PROXY & DEDUPLICATION ============
-def load_proxies(file_path: str = None) -> List[str]:
+def load_proxies(file_path: str = None) -> list[str]:
     """Load proxy list from file"""
     path = Path(file_path or PROXY_FILE)
     if not path.exists():
@@ -135,11 +132,11 @@ def get_used_data() -> set:
     path = Path(__file__).parent / USED_FILE
     if not path.exists():
         return set()
-    return set(
+    return {
         line.strip()
         for line in path.read_text(encoding="utf-8").splitlines()
         if line.strip()
-    )
+    }
 
 
 def is_data_used(first_name: str, last_name: str, dob: str) -> bool:
@@ -414,7 +411,7 @@ class VeteransVerifier:
             )
             resp.raise_for_status()
             return resp.json().get("verification_id")
-        except requests.exceptions.HTTPError as e:
+        except requests.exceptions.HTTPError:
             if resp.status_code == 403:
                 print("   [ERROR] 403 Forbidden - AccessToken expired or invalid!")
                 print("")
@@ -709,7 +706,7 @@ def main():
 
         if result.get("success"):
             success += 1
-            print(f"   [SUCCESS]\n")
+            print("   [SUCCESS]\n")
             print("-" * 55)
             print("  Verification successful! Stopping...")
             print("-" * 55)

@@ -27,7 +27,6 @@ import random
 import asyncio
 import base64
 from pathlib import Path
-from typing import Dict, Optional, Tuple, List
 from datetime import datetime, timedelta
 from io import BytesIO
 
@@ -233,7 +232,7 @@ class SchoolDatabase:
     def __init__(self):
         self.schools = self._load()
 
-    def _load(self) -> List[Dict]:
+    def _load(self) -> list[dict]:
         json_path = DATA_DIR / "uk_schools.json"
         if json_path.exists():
             try:
@@ -242,17 +241,17 @@ class SchoolDatabase:
                 pass
         return DEFAULT_UK_SCHOOLS
 
-    def random(self) -> Dict:
+    def random(self) -> dict:
         return random.choice(self.schools)
 
-    def search(self, query: str) -> Optional[Dict]:
+    def search(self, query: str) -> dict | None:
         query_lower = query.lower()
         for school in self.schools:
             if query_lower in school["name"].lower():
                 return school
         return None
 
-    def list_names(self) -> List[str]:
+    def list_names(self) -> list[str]:
         return [s["name"] for s in self.schools]
 
 
@@ -261,7 +260,7 @@ class SchoolDatabase:
 # =============================================================================
 
 
-def generate_name() -> Tuple[str, str]:
+def generate_name() -> tuple[str, str]:
     return random.choice(UK_FIRST_NAMES), random.choice(UK_LAST_NAMES)
 
 
@@ -318,7 +317,7 @@ def load_chip_base64() -> str:
     return ""
 
 
-def render_employment_letter(first: str, last: str, school: Dict, position: str) -> str:
+def render_employment_letter(first: str, last: str, school: dict, position: str) -> str:
     """Render employment letter template with data."""
     template = load_template("employment_letter")
 
@@ -361,7 +360,7 @@ def render_employment_letter(first: str, last: str, school: Dict, position: str)
 
 
 def render_teacher_id(
-    first: str, last: str, school: Dict, position: str, dob: str
+    first: str, last: str, school: dict, position: str, dob: str
 ) -> str:
     """Render teacher ID card template with data."""
     template = load_template("teacher_id")
@@ -486,7 +485,7 @@ def apply_anti_detection(png_bytes: bytes, max_rotation: float = 2.0) -> bytes:
 
 
 async def generate_employment_letter(
-    first: str, last: str, school: Dict, position: str
+    first: str, last: str, school: dict, position: str
 ) -> bytes:
     """Generate employment letter as PNG."""
     html = render_employment_letter(first, last, school, position)
@@ -496,7 +495,7 @@ async def generate_employment_letter(
 
 
 async def generate_teacher_id(
-    first: str, last: str, school: Dict, position: str, dob: str
+    first: str, last: str, school: dict, position: str, dob: str
 ) -> bytes:
     """Generate teacher ID card as PNG."""
     html = render_teacher_id(first, last, school, position, dob)

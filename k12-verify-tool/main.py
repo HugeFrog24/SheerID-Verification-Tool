@@ -15,16 +15,13 @@ Written from scratch based on SheerID API flow
 Author: ThanhNguyxn
 """
 
-import os
 import re
 import sys
 import json
 import time
 import random
-import hashlib
 from pathlib import Path
 from io import BytesIO
-from typing import Dict, Optional, Tuple, Any
 
 try:
     import httpx
@@ -499,7 +496,7 @@ LAST_NAMES = [
 ]
 
 
-def generate_name() -> Tuple[str, str]:
+def generate_name() -> tuple[str, str]:
     return random.choice(FIRST_NAMES), random.choice(LAST_NAMES)
 
 
@@ -572,9 +569,9 @@ def generate_teacher_badge(first_name: str, last_name: str, school_name: str) ->
     info_lines = [
         f"Name: {first_name} {last_name}",
         f"ID: {teacher_id}",
-        f"Position: Teacher",
-        f"Department: Education",
-        f"Status: Active",
+        "Position: Teacher",
+        "Department: Education",
+        "Status: Active",
     ]
 
     for line in info_lines:
@@ -635,11 +632,11 @@ class K12Verifier:
             self.client.close()
 
     @staticmethod
-    def _parse_verification_id(url: str) -> Optional[str]:
+    def _parse_verification_id(url: str) -> str | None:
         match = re.search(r"verificationId=([a-f0-9]+)", url, re.IGNORECASE)
         return match.group(1) if match else None
 
-    def _request(self, method: str, url: str, body: Dict = None) -> Tuple[Dict, int]:
+    def _request(self, method: str, url: str, body: dict = None) -> tuple[dict, int]:
         headers = {"Content-Type": "application/json"}
         try:
             response = self.client.request(
@@ -678,7 +675,7 @@ class K12Verifier:
                         org_type = org.get("type", "")
                         if org_type == "K12":
                             print(
-                                f"      ✅ School type verified: K12 (auto-pass chance!)"
+                                "      ✅ School type verified: K12 (auto-pass chance!)"
                             )
                             return True
                         else:
@@ -730,7 +727,7 @@ class K12Verifier:
         print(f"   [ERROR] S3 upload failed. Last error: {last_exc}")
         return False
 
-    def verify(self) -> Dict:
+    def verify(self) -> dict:
         if not self.verification_id:
             return {"success": False, "error": "Invalid verification URL"}
 
@@ -830,7 +827,7 @@ class K12Verifier:
             # Return special status so caller can request new link and retry
             if current_step == "emailLoop":
                 print(f"\n   ⚠️  emailLoop triggered for: {school['name']}")
-                print(f"      This school/data combo requires email verification")
+                print("      This school/data combo requires email verification")
                 return {
                     "success": False,
                     "email_loop": True,
@@ -947,7 +944,7 @@ def main():
         print("[ERROR] Invalid URL. Must contain sheerid.com")
         return
 
-    print(f"\n[INFO] Processing URL...")
+    print("\n[INFO] Processing URL...")
     if args.proxy:
         print(f"[INFO] Using proxy: {args.proxy}")
 

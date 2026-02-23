@@ -21,7 +21,6 @@ Usage:
 Author: ThanhNguyxn
 """
 
-import os
 import sys
 import json
 import time
@@ -29,7 +28,6 @@ import random
 import asyncio
 import argparse
 from pathlib import Path
-from typing import Dict, Optional, Tuple
 from dataclasses import dataclass
 
 try:
@@ -79,7 +77,7 @@ class CapturedTokens:
         """Check if tokens are still valid (1 hour expiry assumed)"""
         return time.time() - self.timestamp < 3600
 
-    def to_headers(self) -> Dict[str, str]:
+    def to_headers(self) -> dict[str, str]:
         """Convert to request headers"""
         return {
             "Authorization": self.bearer,
@@ -96,7 +94,7 @@ class MS365Verifier:
 
     def __init__(self, headless: bool = False):
         self.headless = headless
-        self.tokens: Optional[CapturedTokens] = None
+        self.tokens: CapturedTokens | None = None
         self.browser = None
         self.page = None
 
@@ -193,7 +191,7 @@ class MS365Verifier:
         params = "&".join([f"{k}={v}" for k, v in CHECKOUT_PARAMS.items()])
         url = f"{MS365_CHECKOUT_URL}?{params}"
 
-        print(f"[INFO] Navigating to checkout page...")
+        print("[INFO] Navigating to checkout page...")
         print(f"[INFO] URL: {url}")
 
         try:
@@ -266,7 +264,7 @@ class MS365Verifier:
             print(f"[ERROR] Failed to trigger verification: {e}")
             return False
 
-    def verify_student_email(self, email: str) -> Dict:
+    def verify_student_email(self, email: str) -> dict:
         """
         Submit student email for verification
         This calls the MS365 internal API
@@ -301,7 +299,7 @@ class MS365Verifier:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    def check_verification_status(self) -> Dict:
+    def check_verification_status(self) -> dict:
         """Check current verification status"""
         if not self.tokens or not self.tokens.is_valid:
             return {"success": False, "error": "No valid tokens"}
@@ -320,7 +318,7 @@ class MS365Verifier:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-    async def upload_document_sheerid(self, first: str, last: str, school: str) -> Dict:
+    async def upload_document_sheerid(self, first: str, last: str, school: str) -> dict:
         """
         Fallback: Upload document via SheerID if embedded in page
         This is used when email verification fails

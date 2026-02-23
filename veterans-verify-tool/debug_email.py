@@ -1,6 +1,5 @@
 import imaplib
 import json
-import sys
 import os
 from pathlib import Path
 
